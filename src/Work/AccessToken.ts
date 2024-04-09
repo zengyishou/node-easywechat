@@ -27,7 +27,7 @@ class AccessToken implements RefreshableAccessTokenInterface
    */
   getKey(): string {
     if (!this.key) {
-      this.key = `work.access_token.${this.corpId}`;
+      this.key = `work.access_token.${this.corpId}.${this.secret}`;
     }
     return this.key;
   }

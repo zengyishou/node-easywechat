@@ -29,7 +29,7 @@ class SuiteAccessToken implements RefreshableAccessTokenInterface
    */
   getKey(): string {
     if (!this.key) {
-      this.key = `open_work.suite_access_token.${this.suiteId}`;
+      this.key = `open_work.suite_access_token.${this.suiteId}.${this.suiteSecret}`;
     }
     return this.key;
   }

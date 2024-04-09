@@ -33,7 +33,7 @@ class AccessToken implements RefreshableAccessTokenInterface
    */
   getKey(): string {
     if (!this.key) {
-      this.key = `${this.CACHE_KEY_PREFIX}.access_token.${this.appId}`;
+      this.key = `${this.CACHE_KEY_PREFIX}.access_token.${this.appId}.${this.secret}.${this.stable?1:0}`;
     }
     return this.key;
   }

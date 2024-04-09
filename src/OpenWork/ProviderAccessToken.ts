@@ -27,7 +27,7 @@ class ProviderAccessToken implements RefreshableAccessTokenInterface
    */
   getKey(): string {
     if (!this.key) {
-      this.key = `open_work.access_token.${this.corpId}`;
+      this.key = `open_work.access_token.${this.corpId}.${this.providerSecret}`;
     }
     return this.key;
   }
