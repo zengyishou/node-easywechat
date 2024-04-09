@@ -13,7 +13,7 @@ class TestUnit extends BaseTestUnit {
         'mock-secret',
         null,
       );
-      this.assert.strictEqual(token.getKey(), 'open_work.access_token.mock-corpid');
+      this.assert.strictEqual(token.getKey(), 'open_work.access_token.mock-corpid.mock-secret');
 
       token.setKey('custom-token-cache-key');
       this.assert.strictEqual(token.getKey(), 'custom-token-cache-key');

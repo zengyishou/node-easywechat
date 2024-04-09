@@ -49,7 +49,7 @@ class TestUnit extends BaseTestUnit {
         'mock-appid',
         'mock-secret',
       );
-      this.assert.strictEqual(accessToken.getKey(), 'official_account.access_token.mock-appid');
+      this.assert.strictEqual(accessToken.getKey(), 'official_account.access_token.mock-appid.mock-secret.0');
     });
 
     it('Should use custom key for cache correctly', () => {
