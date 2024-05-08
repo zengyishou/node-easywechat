@@ -66,10 +66,20 @@ class Client implements HttpClientInterface
     }
 
     if (this.isV3Request(url) && !payload.headers['authorization']) {
+      if (typeof payload.json !== 'undefined') {
+        if (typeof payload.json === 'object') {
+          payload.data = JSON.stringify(payload.json);
+        }
+        else if (typeof payload.json === 'string') {
+          payload.data = payload.json;
+        }
+        delete payload.json;
+      }
+
       payload.headers['authorization'] = this.createSignature(method, url, payload);
     }
     else {
-      if (payload.xml) {
+      if (typeof payload.xml !== 'undefined') {
         if (typeof payload.xml === 'object') {
           payload.xml = buildXml(this.attachLegacySignature(payload.xml));
         }

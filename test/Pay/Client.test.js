@@ -96,6 +96,10 @@ class TestUnit extends BaseTestUnit {
           openid: 'mock-openid',
         }
       });
+      const requestInfo = response.getInfo();
+      const requestData = JSON.parse(requestInfo.data);
+      this.assert.strictEqual(requestInfo.headers.get('authorization').startsWith('WECHATPAY2-SHA256-RSA2048'), true);
+      this.assert.strictEqual(requestData.mchid, 'mock-mch-id');
       this.assert.deepStrictEqual(response.toObject(), result);
     });
 
