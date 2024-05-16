@@ -9,7 +9,7 @@ class Server extends BaseServer
 {
   /**
    * 添加普通消息处理器
-   * @deprecated 视频号小店不支持普通消息
+   * @deprecated 视频号不支持普通消息
    */
   addMessageListener(): this {
     return this;
