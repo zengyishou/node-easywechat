@@ -4,7 +4,7 @@ import Encryptor from "../Encryptor";
 import Message from "../Message";
 import { createHash, parseXml } from "../Support/Utils";
 
-class DecryptXmlMessageMixin
+class DecryptMessageMixin
 {
   /**
    * 解密消息
@@ -12,11 +12,19 @@ class DecryptXmlMessageMixin
    */
   async decryptMessage(message: Message, encryptor: Encryptor, signature: string, timestamp: number, nonce: string): Promise<Message>
   {
-    let ciphertext = message['Encrypt'];
+    const ciphertext = message['Encrypt'];
 
     this.validateSignature(encryptor.getToken(), ciphertext, signature, timestamp, nonce);
 
-    let attributes: Record<string, any> = await parseXml(encryptor.decrypt(ciphertext, signature, nonce, timestamp));
+    const plaintext = encryptor.decrypt(ciphertext, signature, nonce, timestamp);
+
+    let attributes: Record<string, any>;
+    if (plaintext.substring(0,1) === '<') {
+      attributes = await parseXml(plaintext);
+    }
+    else {
+      attributes = JSON.parse(plaintext);
+    }
 
     message.merge(attributes);
 
@@ -39,4 +47,4 @@ class DecryptXmlMessageMixin
 
 };
 
-export = DecryptXmlMessageMixin;
+export = DecryptMessageMixin;

@@ -36,7 +36,10 @@ class Server extends ServerInterface
     let response = await this.handle(new Response(200, {}, 'success'), message);
 
     if (!(response instanceof Response)) {
-      response = await this.transformToReply(response, message, this.encryptor)
+      const contentType = this.request.getHeader('content-type');
+      const contentBody = this.request.getBody().toString();
+      const isXml = (contentType && contentType.indexOf('xml') > -1) || contentBody.substring(0,1) === '<';
+      response = await this.transformToReply(response, message, this.encryptor, isXml);
     }
 
     return response;
@@ -93,11 +96,35 @@ class Server extends ServerInterface
 };
 
 interface Server {
+  /**
+   * 从后添加处理器
+   * @param handler
+   */
   with(next: ServerHandlerClosure<Message>): this;
+  /**
+   * 从后添加处理器
+   * @param handler
+   */
   withHandler(next: ServerHandlerClosure<Message>): this;
+  /**
+   * 从前添加处理器
+   * @param handler
+   */
   prepend(next: ServerHandlerClosure<Message>): this;
+  /**
+   * 从前添加处理器
+   * @param handler
+   */
   prependHandler(next: ServerHandlerClosure<Message>): this;
+  /**
+   * 删除处理器
+   * @param handler
+   */
   without(next: ServerHandlerClosure<Message>): this;
+  /**
+   * 删除处理器
+   * @param handler
+   */
   withoutHandler(next: ServerHandlerClosure<Message>): this;
 }
 

@@ -7,13 +7,13 @@ import Response from "../Http/Response";
 import Message from "../Message";
 import { buildXml, getTimestamp } from "../Support/Utils";
 
-class ResponseXmlMessageMixin
+class ResponseMessageMixin
 {
   /**
    * 转化为回复消息
    * @returns
    */
-  async transformToReply(response: any, message: Message, encryptor: Encryptor = null): Promise<ResponseInterface>
+  async transformToReply(response: any, message: Message, encryptor: Encryptor = null, isXml: boolean = true): Promise<ResponseInterface>
   {
     if (!response || response === true) {
       return new Response(200, {}, 'success');
@@ -25,7 +25,12 @@ class ResponseXmlMessageMixin
       CreateTime: getTimestamp(),
     }, await this.normalizeResponse(response));
 
-    return this.createXmlResponse(attributes, encryptor);
+    if (isXml) {
+      return this.createXmlResponse(attributes, encryptor);
+    }
+    else {
+      return this.createJsonResponse(attributes, encryptor);
+    }
   }
 
   protected async normalizeResponse(response: any): Promise<Record<string, any>> {
@@ -58,12 +63,25 @@ class ResponseXmlMessageMixin
     return new Response(
       200,
       {
-        'Content-Type': 'application/xml'
+        'Content-Type': 'text/xml'
       },
       encryptor ? encryptor.encrypt(xml) : xml
     );
   }
 
+  protected createJsonResponse(attributes: Record<string, any>, encryptor: Encryptor = null): ResponseInterface
+  {
+    let json = JSON.stringify(attributes);
+
+    return new Response(
+      200,
+      {
+        'Content-Type': 'application/json'
+      },
+      encryptor ? encryptor.encrypt(json) : json
+    );
+  }
+
 };
 
-export = ResponseXmlMessageMixin;
+export = ResponseMessageMixin;

@@ -38,16 +38,16 @@ class HandlersMixin
   }
 
   /**
-   * @alias withHandler()
+   * 从后添加处理器
+   * @param handler
    */
   with(handler: ServerHandlerClosure<Message>): this {
     return this.withHandler(handler);
   }
 
   /**
-   * 从最后添加处理器
+   * 从后添加处理器
    * @param handler
-   * @returns
    */
   withHandler(handler: ServerHandlerClosure<Message>): this {
     this.handlers.push(this.createHandlerItem(handler));
@@ -55,16 +55,16 @@ class HandlersMixin
   }
 
   /**
-   * @alias prependHandler()
+   * 从前添加处理器
+   * @param handler
    */
   prepend(handler: ServerHandlerClosure<Message>): this {
     return this.prependHandler(handler);
   }
 
   /**
-   * 从最前添加处理器
+   * 从前添加处理器
    * @param handler
-   * @returns
    */
   prependHandler(handler: ServerHandlerClosure<Message>): this {
     this.handlers.unshift(this.createHandlerItem(handler));
@@ -72,7 +72,8 @@ class HandlersMixin
   }
 
   /**
-   * @alias withoutHandler()
+   * 删除处理器
+   * @param handler
    */
   without(handler: ServerHandlerClosure<Message>): this {
     return this.withoutHandler(handler);
@@ -81,7 +82,6 @@ class HandlersMixin
   /**
    * 删除处理器
    * @param handler
-   * @returns
    */
   withoutHandler(handler: ServerHandlerClosure<Message>): this {
     let index = this.indexOf(handler);
