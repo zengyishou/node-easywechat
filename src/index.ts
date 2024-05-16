@@ -99,7 +99,7 @@ export function defineOpenWorkConfig(config: OpenWorkConfig): OpenWorkConfig {
   return config;
 }
 /**
- * 定义视频号小店配置
+ * 定义视频号配置
  * @param config
  */
 export function defineChannelConfig(config: ChannelConfig): ChannelConfig {
@@ -151,7 +151,7 @@ export function defineOpenWorkServerHandler(func: ServerHandlerClosure<OpenWorkM
   return func;
 }
 /**
- * 定义视频号小店服务端消息处理函数
+ * 定义视频号服务端消息处理函数
  * @param func
  */
 export function defineChannelServerHandler(func: ServerHandlerClosure<ChannelMessage>): ServerHandlerClosure<ChannelMessage> {
