@@ -481,3 +481,34 @@ export interface PayAppConfig {
    */
   sign: string;
 }
+
+/**
+ * 视频号配置
+ */
+export interface ChannelConfig extends BaseConfig {
+  /**
+   * 视频号 app_id
+   */
+  app_id?: string;
+
+  /**
+   * 视频号 secret
+   */
+  secret?: string;
+
+  /**
+   * 服务端接口验证 token
+   */
+  token?: string;
+
+  /**
+   * 服务端消息加解密密钥 aes_key
+   */
+  aes_key?: string;
+
+  /**
+   * 是否使用稳定版接口调用凭据，默认：false
+   * @see https://developers.weixin.qq.com/doc/channels/API/basics/getStableAccessToken.html
+   */
+  use_stable_access_token?: boolean;
+}

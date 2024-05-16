@@ -1,11 +1,12 @@
 
-import { OfficialAccountConfig, MiniAppConfig, LogHandler, ServerEventType, ServerHandlerClosure, PayConfig, OpenPlatformConfig, WorkConfig, OpenWorkConfig, HttpClientFailureJudgeClosure, PaymentFailHandler, PaymentAlertHandler, PaymentPaidHandler, PaymentRefundedHandler, PaymentScannedHandler } from './Types/global';
+import { OfficialAccountConfig, MiniAppConfig, LogHandler, ServerEventType, ServerHandlerClosure, PayConfig, OpenPlatformConfig, WorkConfig, OpenWorkConfig, ChannelConfig, HttpClientFailureJudgeClosure, PaymentFailHandler, PaymentAlertHandler, PaymentPaidHandler, PaymentRefundedHandler, PaymentScannedHandler } from './Types/global';
 import OfficialAccount from './OfficialAccount/Application';
 import MiniApp from './MiniApp/Application';
 import Pay from './Pay/Application';
 import OpenPlatform from './OpenPlatform/Application';
 import Work from './Work/Application';
 import OpenWork from './OpenWork/Application';
+import Channel from './Channel/Application';
 import CacheInterface from './Core/Contracts/CacheInterface';
 import ServerRequest from './Core/Http/ServerRequest';
 import FormData from 'form-data';
@@ -13,6 +14,7 @@ import OfficialAccountMessage from './OfficialAccount/Message';
 import WorkMessage from './Work/Message';
 import OpenPlatformMessage from './OpenPlatform/Message';
 import OpenWorkMessage from './OpenWork/Message';
+import ChannelMessage from './Channel/Message';
 import { PublicKey } from './Core/Support/PublicKey';
 import { PrivateKey } from './Core/Support/PrivateKey';
 
@@ -34,6 +36,9 @@ export {
 
   OpenWork,
   OpenWorkConfig,
+
+  Channel,
+  ChannelConfig,
 
   CacheInterface,
   ServerRequest,
@@ -93,6 +98,13 @@ export function defineWorkConfig(config: WorkConfig): WorkConfig {
 export function defineOpenWorkConfig(config: OpenWorkConfig): OpenWorkConfig {
   return config;
 }
+/**
+ * 定义视频号小店配置
+ * @param config
+ */
+export function defineChannelConfig(config: ChannelConfig): ChannelConfig {
+  return config;
+}
 
 
 /**
@@ -136,6 +148,13 @@ export function defineOpenPlatformServerHandler(func: ServerHandlerClosure<OpenP
  * @param func
  */
 export function defineOpenWorkServerHandler(func: ServerHandlerClosure<OpenWorkMessage>): ServerHandlerClosure<OpenWorkMessage> {
+  return func;
+}
+/**
+ * 定义视频号小店服务端消息处理函数
+ * @param func
+ */
+export function defineChannelServerHandler(func: ServerHandlerClosure<ChannelMessage>): ServerHandlerClosure<ChannelMessage> {
   return func;
 }
 
