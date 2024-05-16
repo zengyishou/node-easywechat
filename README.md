@@ -67,6 +67,13 @@ let app = new OpenWork({
   // 配置项
 });
 
+// 视频号
+const { Channel } = require('node-easywechat');
+// 实例化应用
+let app = new Channel({
+  // 配置项
+});
+
 // ----- 定义配置项（v3.5.0+） -----
 
 // 这种方式可以让你在需要单独设置配置项时，也能获得编辑器的代码提示
@@ -80,6 +87,7 @@ const config = defineOfficialAccountConfig({
 // 开放平台: defineOpenPlatformConfig()
 // 企业微信: defineWorkConfig()
 // 企业微信开放平台: defineOpenWorkConfig()
+// 视频号: defineChannelConfig()
 
 // ----- 以下为通用的 api 调用方法 -----
 
@@ -229,6 +237,22 @@ let data = response.toObject();
 }
 ```
 
+``` js
+// 视频号配置
+{
+  // 视频号的 app key
+  app_id: '',
+  // 视频号的 app secret
+  secret: '',
+  // 视频号的 token
+  token: '',
+  // EncodingAESKey
+  aes_key: '',
+  // 是否使用稳定版接口调用凭据，默认：false
+  use_stable_access_token: false
+}
+```
+
 ### 自定义模块（模块替换）使用方法
 
 #### 日志模块
@@ -345,4 +369,5 @@ app.setRequest(request);
 - [x] 开放平台
 - [x] 企业微信
 - [x] 企业微信开放平台
+- [x] 视频号
 - [x] 自定义
