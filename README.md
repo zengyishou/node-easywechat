@@ -177,13 +177,17 @@ let data = response.toObject();
   // 商户号
   mch_id: '',
   // 商户证书路径
-  certificate: '',
+  certificate: '/path/to/apiclient_cert.pem',
   // 商户证书私钥路径
-  private_key: '',
+  private_key: '/path/to/apiclient_key.pem',
   // 平台证书（v3接口需要）
   // 持路径列表或者PublicKey对象列表或者，以serial_no为key，证书内容或PublicKey对象为value的对象
   // 下载工具：https://github.com/wechatpay-apiv3/CertificateDownloader
-  platform_certs: '',
+  // 从 3.5.15 版本开始，node-easywechat 会自动下载并缓存平台证书，开发者可以不再配置该参数，当然配置也还是可以的。
+  platform_certs: [
+    '/path/to/platform_cert_1.pem',
+    '/path/to/platform_cert_2.pem',
+  ],
   // v3 API密钥
   secret_key: '',
   // v2 API密钥
