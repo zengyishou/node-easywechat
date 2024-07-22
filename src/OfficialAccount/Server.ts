@@ -21,13 +21,13 @@ class Server extends ServerInterface
    * @returns
    */
   async serve(): Promise<Response> {
-    let echostr: string = this.request.getQueryParams()['echostr'] || '';
+    let query = this.request.getQueryParams();
+    let echostr: string = query['echostr'] || '';
     if (!!echostr) {
       return new Response(200, { 'Content-Type': 'text/html' }, echostr);
     }
 
     let message = await this.getRequestMessage(this.request);
-    let query = this.request.getQueryParams();
 
     if (this.encryptor && query['msg_signature']) {
       this.prepend(this.decryptRequestMessage(query));
@@ -80,8 +80,7 @@ class Server extends ServerInterface
 
   protected decryptRequestMessage(query: Record<string, any>): ServerHandlerClosure<Message> {
     return async (message: Message, next: ServerHandlerClosure<Message>) => {
-      if (!this.encryptor) return null;
-      await this.decryptMessage(
+      message = await this.decryptMessage(
         message,
         this.encryptor,
         query['msg_signature'] || '',
@@ -91,6 +90,29 @@ class Server extends ServerInterface
 
       return next(message);
     };
+  }
+
+  /**
+   * 获取解密后的消息
+   * @param request 未设置该参数时，则从当前服务端收到的请求中获取
+   * @returns
+   */
+  async getDecryptedMessage(request: ServerRequestInterface = null) {
+    request = request ?? this.request;
+    let message = await this.getRequestMessage(request);
+    let query = request.getQueryParams();
+
+    if (!this.encryptor || !query['msg_signature']) {
+      return message;
+    }
+
+    return await this.decryptMessage(
+      message,
+      this.encryptor,
+      query['msg_signature'] ?? '',
+      query['timestamp'] ?? '',
+      query['nonce'] ?? ''
+    );
   }
 
 };

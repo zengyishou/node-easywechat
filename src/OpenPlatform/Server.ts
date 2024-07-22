@@ -23,13 +23,17 @@ class Server extends ServerInterface
    * @returns
    */
   async serve(): Promise<Response> {
-    let echostr: string = this.request.getQueryParams()['echostr'] || '';
+    let query = this.request.getQueryParams();
+    let echostr: string = query['echostr'] || '';
     if (!!echostr) {
       return new Response(200, { 'Content-Type': 'text/html' }, echostr);
     }
 
     let message = await this.getRequestMessage(this.request);
-    this.prepend(this.decryptRequestMessage());
+
+    if (this.encryptor && query['msg_signature']) {
+      this.prepend(this.decryptRequestMessage(query));
+    }
 
     let response = await this.handle(new Response(200, {}, 'success'), message);
 
@@ -111,10 +115,9 @@ class Server extends ServerInterface
     })
   }
 
-  protected decryptRequestMessage(): ServerHandlerClosure<Message> {
-    let query = this.request.getQueryParams();
+  protected decryptRequestMessage(query: Record<string, any>): ServerHandlerClosure<Message> {
     return async (message: Message, next: ServerHandlerClosure<Message>) => {
-      await this.decryptMessage(
+      message = await this.decryptMessage(
         message,
         this.encryptor,
         query['msg_signature'] || '',
@@ -141,8 +144,8 @@ class Server extends ServerInterface
    * @returns
    */
   async getDecryptedMessage(request: ServerRequestInterface = null): Promise<Message> {
-    if (!request) request = this.request;
-    let message = await Message.createFromRequest(request);
+    request = request ?? this.request;
+    let message = await this.getRequestMessage(request);
     let query = request.getQueryParams();
 
     return this.decryptMessage(

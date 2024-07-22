@@ -37,7 +37,9 @@ class Server extends ServerInterface
 
     let message = await this.getRequestMessage(this.request);
 
-    this.prepend(this.decryptRequestMessage(query));
+    if (this.encryptor && query['msg_signature']) {
+      this.prepend(this.decryptRequestMessage(query));
+    }
 
     let response = await this.handle(new Response(200, {}, 'success'), message);
 
@@ -210,8 +212,7 @@ class Server extends ServerInterface
 
   protected decryptRequestMessage(query: Record<string, any>): ServerHandlerClosure<Message> {
     return async (message: Message, next: ServerHandlerClosure<Message>) => {
-      if (!this.encryptor) return null;
-      await this.decryptMessage(
+      message = await this.decryptMessage(
         message,
         this.encryptor,
         query['msg_signature'] ?? '',
@@ -232,6 +233,10 @@ class Server extends ServerInterface
     request = request ?? this.request;
     let message = await this.getRequestMessage(request);
     let query = request.getQueryParams();
+
+    if (!this.encryptor || !query['msg_signature']) {
+      return message;
+    }
 
     return await this.decryptMessage(
       message,
