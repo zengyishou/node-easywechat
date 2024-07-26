@@ -292,7 +292,7 @@ client.setLogger((...args) => {
 
 #### 缓存模块
 
-框架默认使用文件缓存读取到的 `access_token` 等值，如需要改用其他缓存方式（如：redis），请实现接口 `CacheInterface` 并通过 `app.setCacher` 方法进行模块替换。
+框架默认使用文件缓存读取到的 `access_token` 等值，如需要改用其他缓存方式（如：redis），请实现接口 `CacheInterface` 并通过 `app.setCache` 方法进行模块替换。
 
 ```js
 const { OfficialAccount, CacheInterface } = require('node-easywechat');
@@ -337,7 +337,7 @@ let app = new OfficialAccount({
 });
 
 // 替换缓存实例
-app.setCacher(new RedisCacher(new Redis));
+app.setCache(new RedisCacher(new Redis));
 ```
 
 #### 请求模块
