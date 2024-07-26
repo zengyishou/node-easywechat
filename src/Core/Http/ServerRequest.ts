@@ -32,6 +32,7 @@ class ServerRequest implements ServerRequestInterface
     .withQueryParams(parse(url, true).query || {});
 
     if (body) {
+      this.parsedBody = {};
       this.withBody(body);
     }
   }
