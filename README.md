@@ -20,7 +20,7 @@
 
 ### 使用说明
 
-绝大部分API都可以根据 [EasyWeChat 的文档](https://www.easywechat.com/5.x/) 来使用。小部分（如获取请求相关数据、返回响应数据、支付证书等）的操作，由于语言环境的不同，会有不同处理。具体可以查看 [node-easywechat-demo](https://github.com/hpyer/node-easywechat-demo/) 以及下方的[自定义模块说明](#自定义模块模块替换使用方法) 。如果仍有疑问，请提issue，谢谢～
+请参考 [文档](https://hpyer.github.io/node-easywechat/) 来使用。如有需要可以查看 [示例代码](https://github.com/hpyer/node-easywechat-demo/)。如果仍有疑问，请提issue，谢谢～
 
 从 `3.x` 起 SDK 中不再内置具体业务的接口，仅封装底层基础部分，如认证、授权和 API 客户端。至于为什么不再封装业务接口，可以查看 [EasyWeChat 给出说明](https://easywechat.com/6.x/introduction.html#不再封装业务接口)。
 
