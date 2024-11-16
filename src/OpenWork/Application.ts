@@ -12,7 +12,7 @@ import ClientMixin from '../Core/Mixins/ClientMixin';
 import ConfigMixin from '../Core/Mixins/ConfigMixin';
 import HttpClientMixin from '../Core/Mixins/HttpClientMixin';
 import ServerRequestMixin from '../Core/Mixins/ServerRequestMixin';
-import { applyMixins } from '../Core/Support/Utils';
+import { applyMixins, buildQueryString } from '../Core/Support/Utils';
 import { OpenWorkConfig, ServerHandlerClosure } from '../Types/global';
 import Account from './Account';
 import AccountInterface from './Contracts/AccountInterface';
@@ -291,6 +291,59 @@ class Application implements ApplicationInterface
 
     if (!response['pre_auth_code']) {
       throw new Error('Failed to get pre_auth_code: ' + JSON.stringify(response));
+    }
+
+    return response;
+  }
+
+  /**
+   * 生成授权页地址
+   * @see https://developer.work.weixin.qq.com/document/path/90597#从服务商网站发起
+   * @param callbackUrl 授权后的回调地址
+   * @param pre_auth_code 预授权码，不传则系统自动调用 createPreAuthorizationCode 获取
+   * @param state
+   * @returns
+   */
+  async createPreAuthorizationUrl(callbackUrl: string, pre_auth_code?: string, state?: string) {
+    let optional = {
+      pre_auth_code,
+      state,
+    };
+    if (!optional['pre_auth_code']) {
+      optional.pre_auth_code = (await this.createPreAuthorizationCode()).pre_auth_code;
+    }
+
+    let queries = merge({
+      suite_id: this.getAccount().getSuiteId(),
+      redirect_uri: callbackUrl,
+    }, optional);
+
+    return `https://open.work.weixin.qq.com/3rdapp/install?${buildQueryString(queries)}`;
+  }
+
+  /**
+   * 获取企业永久授权码
+   * @see https://developer.work.weixin.qq.com/document/path/90603
+   * @param authCode 临时授权码
+   * @param suiteAccessToken
+   * @returns
+   */
+  async getPermanentCode(authCode: string, suiteAccessToken: SuiteAccessToken = null) {
+    if (!suiteAccessToken) suiteAccessToken = this.getSuiteAccessToken();
+
+    let response = (await this.getClient().request(
+      'post',
+      '/cgi-bin/service/get_permanent_code',
+      {
+        params: {
+          auth_code: authCode,
+          suite_access_token: await suiteAccessToken.getToken(),
+        }
+      }
+    )).toObject();
+
+    if (!response['permanent_code']) {
+      throw new Error('Failed to get permanent_code: ' + JSON.stringify(response));
     }
 
     return response;

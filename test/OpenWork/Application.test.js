@@ -246,6 +246,77 @@ class TestUnit extends BaseTestUnit {
       this.assert.strictEqual(response['pre_auth_code'], 'fake-pre_auth_code');
     });
 
+    it('Should create preAuthorizationUrl correctly', async () => {
+      let app = new OpenWork({
+        corp_id: 'mock-corpid',
+        provider_secret: 'mock-secret',
+        suite_id: 'mock-suite-id',
+        suite_secret: 'mock-suite-secret',
+        token: 'mock-token',
+        aes_key: 'mock-aes_key',
+      });
+
+      let callback = 'https://www.example.com/callback';
+      let preAuthCode = 'fake-pre_auth_code';
+      let state = 'fake-state';
+      let url = await app.createPreAuthorizationUrl(callback, preAuthCode, state);
+
+      this.assert.strictEqual(url, 'https://open.work.weixin.qq.com/3rdapp/install?suite_id=mock-suite-id&redirect_uri=https%3A%2F%2Fwww.example.com%2Fcallback&pre_auth_code=fake-pre_auth_code&state=fake-state');
+    });
+
+    it('Should get permanent code correctly', async () => {
+      let app = new OpenWork({
+        corp_id: 'mock-corpid',
+        provider_secret: 'mock-secret',
+        suite_id: 'mock-suite-id',
+        suite_secret: 'mock-suite-secret',
+        token: 'mock-token',
+        aes_key: 'mock-aes_key',
+      });
+
+      let cache = this.getMockedCacheClient();
+      cache.mock('cached-suite_ticket', 'key-suite_ticket');
+      cache.mock('cached-suite_access_token', 'key-suite_access_token');
+      cache.mock('cached-provider_access_token', 'key-provider_access_token');
+      app.setCache(cache);
+
+      let ticket = new SuiteTicket('mock-suite-id', cache, 'key-suite_ticket');
+      app.setSuiteTicket(ticket);
+
+      let client = this.getMockedHttpClient(HttpClient.create());
+
+      let providerToken = new ProviderAccessToken(
+        'mock-provider-id',
+        'mock-provider-secret',
+        'key-provider_access_token',
+        cache,
+        client,
+      );
+      app.setProviderAccessToken(providerToken);
+
+      let token = new SuiteAccessToken(
+        'mock-appid',
+        'mock-secret',
+        ticket,
+        'key-suite_access_token',
+        cache,
+        client,
+      );
+      app.setSuiteAccessToken(token);
+
+      client.mock('post', '/cgi-bin/service/get_permanent_code').reply(200, {
+        errcode: 0,
+        errmsg: 'ok',
+        permanent_code: 'fake-permanent_code',
+        expires_in: 7200,
+      });
+      app.setHttpClient(client);
+
+      let response = await app.getPermanentCode('mock-auth_code');
+
+      this.assert.strictEqual(response['permanent_code'], 'fake-permanent_code');
+    });
+
   }
 }
 
